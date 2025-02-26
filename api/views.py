@@ -1,10 +1,14 @@
-from django.shortcuts import render
-from django.http import JsonResponse
 from student.models import Student
+from .serializers import StudentSerializer
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.decorators import api_view
 
+@api_view(['GET'])
 def students_view(request):
-    """ Thats function call the Students atributes and serializers him manually """
-    """ Serializer is take the complex data and converter or simplify for a simple data for 'JSON' or 'XML'."""
-    students = Student.objects.all()
-    students_list = list(students.values())
-    return JsonResponse(students_list, safe=False)
+    if request.method == 'GET':
+        # Get all the data from the Student table
+        students = Student.objects.all()
+        serializer = StudentSerializer(students, many=True)
+        # Why 'many=True' because the students returns data of differents types and we need if for tratament
+        return Response(serializer.data, status=status.HTTP_200_OK)
