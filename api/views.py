@@ -70,4 +70,12 @@ class EmployeeDetail(APIView):
         employed = self.get_object(pk)
         serializer = EmployedSerializer(employed)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def put(self, request, pk):
+        employed = self.get_object(pk)
+        serializer = EmployedSerializer(employed, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)    
+        return Response(status=status.HTTP_400_BAD_REQUEST)
         
