@@ -6,6 +6,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 from django.http import Http404
+from rest_framework import mixins, generics
 
 @api_view(['GET', 'POST'])
 def students_view(request):
@@ -45,7 +46,7 @@ def student_detail_view(request, pk):
         student.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-class Employees(APIView):
+"""class Employees(APIView):
     def get(self, request):
         employess = Employed.objects.all()
         serializer = EmployedSerializer(employess, many=True)
@@ -83,4 +84,28 @@ class EmployeeDetail(APIView):
         employed = self.get_object(pk)
         employed.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    """    
+
+class Employees(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
+    queryset = Employed.objects.all()
+    serializer_class = EmployedSerializer
+
+    def get(self, request):
+        return self.list(request)
+
+    def post(self, request):
+        return self.create(request)
+
+class EmployeeDetail(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, generics.GenericAPIView):
+    queryset = Employed.objects.all()
+    serializer_class = EmployedSerializer
+
+    def get(self, request, pk):
+        return self.retrieve(request, pk)
+
+    def put(self, request, pk):
+        return self.update(request, pk)
+
+    def delete(self, request, pk):
+        return self.destroy(request, pk)
         
