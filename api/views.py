@@ -1,6 +1,8 @@
 from django.shortcuts import render, get_object_or_404
 from student.models import Student
 from employed.models import Employed
+from blog.models import Blog, Coment
+from blog.serializers import BlogSerializer, CommentSerializer
 from .serializers import StudentSerializer, EmployedSerializer
 from rest_framework.response import Response
 from rest_framework import status
@@ -163,3 +165,12 @@ class EmployeeDetail(generics.RetrieveUpdateDestroyAPIView):
 class EmployeesViewset(viewsets.ModelViewSet):
     queryset = Employed.objects.all()
     serializer_class = EmployedSerializer
+
+
+class BlogsView(generics.ListCreateAPIView):
+    queryset = Blog.objects.all()
+    serializer_class = BlogSerializer
+
+class CommentsView(generics.ListCreateAPIView):
+    queryset = Coment.objects.all()
+    serializer_class = CommentSerializer
